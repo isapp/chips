@@ -10,7 +10,7 @@ if [ "${TRAVIS_PULL_REQUEST}" = "false" ]; then
   elif [ "${TRAVIS_BRANCH}" = "release" ]; then
       ./gradlew deployToBintray --stacktrace
       git tag "$(< version)"
-      git push https://isapp-ci:${GITHUB_TOKEN}@github.com/isapp/kontroller.git --tags -q
+      git push https://isapp-ci:${GITHUB_TOKEN}@github.com/isapp/chips.git --tags -q
 
       git config user.email "ci@isapp.com"
       git config user.name "isapp-ci"
@@ -22,7 +22,7 @@ if [ "${TRAVIS_PULL_REQUEST}" = "false" ]; then
       git add version.properties
       git add version
       git commit -m "Bump version"
-      git push https://isapp-ci:${GITHUB_TOKEN}@github.com/isapp/kontroller.git master -q
+      git push https://isapp-ci:${GITHUB_TOKEN}@github.com/isapp/chips.git master -q
   fi
 else
   ./gradlew check --stacktrace
