@@ -33,6 +33,7 @@ dependencies {
   compile deps.appCompat
   compile deps.design
   compile deps.recyclerView
+  compile 'com.google.android:flexbox:0.3.0-alpha2'
 }
 
 apply from: "https://raw.githubusercontent.com/eygraber/bintray-gradle-scripts/master/bintray.gradle"

@@ -4,7 +4,6 @@ import android.content.Context
 import android.graphics.Rect
 import android.support.annotation.StyleRes
 import android.support.v4.widget.TextViewCompat
-import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.AttributeSet
@@ -13,6 +12,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import com.google.android.flexbox.FlexDirection
+import com.google.android.flexbox.FlexboxLayoutManager
 import com.isapp.chips.library.R
 import java.util.*
 
@@ -27,31 +28,35 @@ class ChipsView : RecyclerView {
   constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
   constructor(context: Context?, attrs: AttributeSet?, defStyle: Int) : super(context, attrs, defStyle)
 
-  private var adapter: ChipsAdapter? = null
+  private val spacingDecoration = GridSpacingItemDecoration(10)
+
+  private var adapter: ChipsAdapter = ChipsAdapter()
 
   fun setListener(listener: ChipsListener) {
-    adapter?.listener = listener
+    adapter.listener = listener
   }
 
   fun setTextAppearance(@StyleRes textAppearance: Int) {
-    adapter?.textAppearance = textAppearance
+    adapter.textAppearance = textAppearance
   }
 
   init {
-    useHorizontalScrollingLayout()
+    useFlexboxScrollingLayout()
   }
 
   fun addChip(chip: Chip) { synchronized(this) {
-    adapter?.apply{
+    adapter.apply {
       chips.add(chip)
       val index = chips.size - 1
       notifyItemInserted(index)
-      scrollToPosition(index)
+      post {
+        scrollToPosition(itemCount - 1)
+      }
     }
   }}
 
   fun removeChip(chip: Chip) { synchronized(this) {
-    adapter?.apply {
+    adapter.apply {
       val index = chips.indexOf(chip)
       if(index >= 0) {
         chips.remove(chip)
@@ -60,67 +65,20 @@ class ChipsView : RecyclerView {
     }
   }}
 
-  fun Context.dip(value: Int): Int = (value * resources.displayMetrics.density).toInt()
-
-  fun useFreeFormScrollingLayout(maxColumns: Int) = synchronized(this) {
-    layoutManager = GridLayoutManager(context, maxColumns).apply {
-      spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
-        override fun getSpanSize(position: Int): Int {
-          val parentWidth = width
-
-          val holder = getChildAt(position)?.let {
-            getChildViewHolder(it)  as? ChipsViewHolder
-          }
-
-          val textPaint = if(holder == null) {
-            TextView(context).let {
-              adapter?.textAppearance?.let { textAppearance ->
-                TextViewCompat.setTextAppearance(it, textAppearance)
-              }
-              it.paint
-            }
-          }
-          else {
-            holder.text.paint
-          }
-
-          val chip = adapter?.chips?.get(position) ?: Chip(Any(), "")
-
-          val text = chip.text
-          val rect = Rect()
-          textPaint.getTextBounds(text, 0, text.length, rect)
-
-          // add padding and margins + icon widths
-          val childWidth = if(chip.deletable && chip.icon) {
-            (rect.width() + context.dip(80)).toFloat()
-          }
-          else if(chip.deletable && !chip.icon) {
-            (rect.width() + context.dip(55)).toFloat()
-          }
-          else if(!chip.deletable && chip.icon) {
-            (rect.width() + context.dip(60)).toFloat()
-          }
-          else {
-            (rect.width() + context.dip(35)).toFloat()
-          }
-
-          val widthPerSpan = parentWidth.toFloat() / spanCount.toFloat()
-          return Math.ceil(childWidth / widthPerSpan.toDouble()).toInt()
-        }
-      }
-
-      spanSizeLookup.isSpanIndexCacheEnabled = true
-
-      addItemDecoration(GridSpacingItemDecoration(10))
-    }
-    adapter = adapter?.let(::ChipsAdapter) ?: ChipsAdapter()
-    swapAdapter(adapter, true)
+  fun useFlexboxScrollingLayout() = synchronized(this) {
+    layoutManager = FlexboxLayoutManager(FlexDirection.ROW)
+    adapter = ChipsAdapter(adapter)
+    addItemDecoration(spacingDecoration)
+    setAdapter(adapter)
   }
 
   fun useHorizontalScrollingLayout() = synchronized(this) {
-    layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-    adapter = adapter?.let(::ChipsAdapter) ?: ChipsAdapter()
-    swapAdapter(adapter, true)
+    layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false).apply {
+      stackFromEnd = true
+    }
+    adapter = ChipsAdapter(adapter)
+    removeItemDecoration(spacingDecoration)
+    setAdapter(adapter)
   }
 }
 

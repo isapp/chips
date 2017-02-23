@@ -11,7 +11,7 @@ import java.util.*
 class ChipsActivity : AppCompatActivity() {
   private lateinit var chips: ChipsView
   private lateinit var fab: FloatingActionButton
-  private var freeForm = false
+  private var flexBox = false
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -43,15 +43,17 @@ class ChipsActivity : AppCompatActivity() {
     })
 
     fab.setOnLongClickListener {
-      if(freeForm) {
-        chips.useHorizontalScrollingLayout()
+      if(flexBox) {
+        chips.useFlexboxScrollingLayout()
       }
       else {
-        chips.useFreeFormScrollingLayout(5)
+        chips.useHorizontalScrollingLayout()
       }
-      freeForm = !freeForm
+      flexBox = !flexBox
       true
     }
+
+    Snackbar.make(fab, "Long press the FAB to switch between flexbox chips and horizontal chips.", Snackbar.LENGTH_LONG).show()
   }
 
 }
