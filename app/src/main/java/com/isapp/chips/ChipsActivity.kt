@@ -33,6 +33,12 @@ class ChipsActivity : AppCompatActivity() {
       override fun onChipDeleted(chip: Chip) {
         chips.removeChip(chip)
       }
+
+      override fun onTextChanged(text: String) {
+        if(text.endsWith(" ") and text.trim().isNotEmpty()) {
+          chips.addChip(Chip(text.trimStart().takeWhile { it != ' ' }, deletable = randomBool(), icon = randomBool()), clearEditText = true)
+        }
+      }
     }
 
     fab = findViewById(R.id.fab) as FloatingActionButton
