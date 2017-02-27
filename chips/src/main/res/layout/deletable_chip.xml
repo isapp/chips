@@ -25,6 +25,7 @@
     android:layout_height="24dp"
     android:layout_marginEnd="4dp"
     android:layout_marginRight="4dp"
-    android:src="@drawable/ic_remove_chip"/>
+    android:src="@drawable/ic_remove_chip"
+    android:contentDescription="@string/delete_chip_content_description"/>
 
 </LinearLayout>
