@@ -21,7 +21,7 @@ class ChipsActivity : AppCompatActivity() {
 
     chips = findViewById(R.id.chips_view) as ChipsView
 
-    chips.setListener(object : ChipsListener {
+    chips.chipsListener = object : ChipsListener {
       override fun onLoadIcon(chip: Chip, imageView: ImageView) {
         imageView.setImageResource(R.mipmap.ic_launcher)
       }
@@ -33,9 +33,7 @@ class ChipsActivity : AppCompatActivity() {
       override fun onChipDeleted(chip: Chip) {
         chips.removeChip(chip)
       }
-    })
-
-    chips.setTextAppearance(R.style.Base_TextAppearance_AppCompat_Body2)
+    }
 
     fab = findViewById(R.id.fab) as FloatingActionButton
     fab.setOnClickListener({ view ->
@@ -44,10 +42,10 @@ class ChipsActivity : AppCompatActivity() {
 
     fab.setOnLongClickListener {
       if(freeForm) {
-        chips.useHorizontalScrollingLayout()
+        chips.orientation = ChipsView.HORIZONTAL
       }
       else {
-        chips.useFreeFormScrollingLayout(5)
+        chips.orientation = ChipsView.VERTICAL
       }
       freeForm = !freeForm
       true

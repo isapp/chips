@@ -12,7 +12,8 @@
   <ImageView
     android:id="@android:id/icon1"
     android:layout_width="32dp"
-    android:layout_height="32dp"/>
+    android:layout_height="32dp"
+    android:contentDescription="@string/chip_icon_content_description"/>
 
   <TextView
     android:id="@android:id/text1"
@@ -30,6 +31,7 @@
     android:layout_height="24dp"
     android:layout_marginEnd="4dp"
     android:layout_marginRight="4dp"
-    android:src="@drawable/ic_remove_chip"/>
+    android:src="@drawable/ic_remove_chip"
+    android:contentDescription="@string/delete_chip_content_description"/>
 
 </LinearLayout>

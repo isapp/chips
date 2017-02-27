@@ -1,3 +1,5 @@
 <resources>
   <string name="app_name">library</string>
+  <string name="delete_chip_content_description">Delete chip</string>
+  <string name="chip_icon_content_description">Chip icon</string>
 </resources>
