@@ -1,5 +1,8 @@
 sudo: required
 
+git:
+  depth: 99999
+
 language: android
 
 android:
